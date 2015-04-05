@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -47,6 +48,19 @@ func (c *SpotifyCommand) Run() (string, error) {
 	return string(result), nil
 }
 
+func centerNotifier(content string) error {
+	cmdName := "/usr/bin/osascript"
+	cmd := fmt.Sprintf(`display notification "%s" with title "Pomodoro"`, content)
+
+	err := exec.Command(cmdName, "-e", cmd).Run()
+	if err != nil {
+		return err
+	}
+
+	log.Println(content)
+	return nil
+}
+
 var (
 	BreakMusic  SpotifyCommand = SpotifyCommand{Statement: "play_track", Value: `"spotify:track:3UQM3V4mjS1DuAqucivt1Q"`}
 	StopPlaying SpotifyCommand = SpotifyCommand{Statement: "pause"}
@@ -73,24 +87,25 @@ func _break(length int, breakEndMessage string) {
 	case <-ch:
 	case <-time.After(time.Duration(length) * timeInterval):
 		StopPlaying.Run()
-		log.Println(breakEndMessage)
+		centerNotifier(breakEndMessage)
 	}
 }
 
 func shortBreak() {
-	log.Print("Short break started")
+	centerNotifier("Short break started")
 	_break(SHORT_BREAK, "Short break time out")
 }
 
 func longBreak() {
-	log.Println("Long break started")
+	centerNotifier("Long break started")
 	_break(LONG_BREAK, "Long break time out")
 }
 
 func working() {
-	log.Println("Started Working...")
+	centerNotifier("Started Working...")
 	time.Sleep(WORKING_TIME * timeInterval)
 }
+
 func run() {
 	log.Println("Pomodoro started")
 
