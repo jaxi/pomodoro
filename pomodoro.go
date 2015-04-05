@@ -16,7 +16,7 @@ const (
 	PERIOD_COUNT = 4
 )
 
-type Command struct {
+type SpotifyCommand struct {
 	Statement string
 	Value     string
 }
@@ -28,7 +28,7 @@ var cmdMap = map[string]string{
 	"play_track": "play track",
 }
 
-func (c *Command) Run() (string, error) {
+func (c *SpotifyCommand) Run() (string, error) {
 	cmdName := "/usr/bin/osascript"
 	spfx := `tell application "Spotify" to`
 
@@ -48,8 +48,8 @@ func (c *Command) Run() (string, error) {
 }
 
 var (
-	BreakMusic  Command = Command{Statement: "play_track", Value: `"spotify:track:3UQM3V4mjS1DuAqucivt1Q"`}
-	StopPlaying Command = Command{Statement: "pause"}
+	BreakMusic  SpotifyCommand = SpotifyCommand{Statement: "play_track", Value: `"spotify:track:3UQM3V4mjS1DuAqucivt1Q"`}
+	StopPlaying SpotifyCommand = SpotifyCommand{Statement: "pause"}
 )
 
 var timeInterval time.Duration
